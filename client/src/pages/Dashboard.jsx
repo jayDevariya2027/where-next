@@ -6,7 +6,9 @@ import DashPosts from "../components/DashPosts";
 import DashUsers from "../components/DashUsers";
 import DashComments from "../components/DashComments";
 import DashboardComp from "../components/DashboardComp";
+import { useSelector } from "react-redux";
 export default function Dashboard() {
+  const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
   const [tab, setTab] = useState("");
   useEffect(() => {
@@ -20,11 +22,30 @@ export default function Dashboard() {
         <DashSidebar />
       </div>
       {tab === "profile" && <DashProflie />}
-      {tab === "posts" && <DashPosts />}
-      {tab === "users" && <DashUsers />}
-      {tab === "comments" && <DashComments />}
-      {tab === "dash" && <DashboardComp />}
-
+      {tab === "posts" &&
+        (currentUser.isAdmin ? (
+          <DashPosts />
+        ) : (
+          <p className="m-auto">only admin can make changes </p>
+        ))}
+      {tab === "users" &&
+        (currentUser.isAdmin ? (
+          <DashUsers />
+        ) : (
+          <p className="m-auto">only admin can make changes </p>
+        ))}
+      {tab === "comments" &&
+        (currentUser.isAdmin ? (
+          <DashComments />
+        ) : (
+          <p className="m-auto">only admin can make changes </p>
+        ))}
+      {tab === "dash" &&
+        (currentUser.isAdmin ? (
+          <DashboardComp />
+        ) : (
+          <p className="m-auto">only admin can make changes </p>
+        ))}
     </div>
   );
 }
