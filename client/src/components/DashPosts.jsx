@@ -10,19 +10,23 @@ export default function DashPosts() {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [postIdToDelete, setPostIdToDelete] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        setLoading(true);
         const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
         const data = await res.json();
         if (res.ok) {
+          setLoading(false);
           setUserPosts(data.posts);
           if (data.posts.length < 9) {
             setShowMore(false);
           }
         }
       } catch (error) {
+        setLoading(false);
         console.log(error.message);
       }
     };
@@ -74,7 +78,9 @@ export default function DashPosts() {
       className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500
     "
     >
-      {currentUser.isAdmin && userPosts.length > 0 ? (
+      {loading ? (
+        <p className="text-xl text-gray-500">Loading...</p>
+      ) : currentUser.isAdmin && userPosts.length > 0 ? (
         <>
           <Table hoverable className="shadow-md">
             <Table.Head>
@@ -84,7 +90,7 @@ export default function DashPosts() {
               <Table.HeadCell>Category</Table.HeadCell>
               <Table.HeadCell>Delete</Table.HeadCell>
               <Table.HeadCell>
-                <span>edit</span>
+                <span>Edit</span>
               </Table.HeadCell>
             </Table.Head>
             {userPosts.map((post) => (
